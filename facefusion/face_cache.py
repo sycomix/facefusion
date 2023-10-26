@@ -8,14 +8,11 @@ FACES_CACHE : Dict[str, List[Face]] = {}
 
 def get_faces_cache(frame : Frame) -> Optional[List[Face]]:
 	frame_hash = create_frame_hash(frame)
-	if frame_hash in FACES_CACHE:
-		return FACES_CACHE[frame_hash]
-	return None
+	return FACES_CACHE[frame_hash] if frame_hash in FACES_CACHE else None
 
 
 def set_faces_cache(frame : Frame, faces : List[Face]) -> None:
-	frame_hash = create_frame_hash(frame)
-	if frame_hash:
+	if frame_hash := create_frame_hash(frame):
 		FACES_CACHE[frame_hash] = faces
 
 

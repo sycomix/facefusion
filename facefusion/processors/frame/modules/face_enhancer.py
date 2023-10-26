@@ -134,7 +134,7 @@ def enhance_face(target_face: Face, temp_frame: Frame) -> Frame:
 	for frame_processor_input in frame_processor.get_inputs():
 		if frame_processor_input.name == 'input':
 			frame_processor_inputs[frame_processor_input.name] = crop_frame
-		if frame_processor_input.name == 'weight':
+		elif frame_processor_input.name == 'weight':
 			frame_processor_inputs[frame_processor_input.name] = numpy.array([ 1 ], dtype = numpy.double)
 	with THREAD_SEMAPHORE:
 		crop_frame = frame_processor.run(None, frame_processor_inputs)[0][0]
@@ -176,8 +176,8 @@ def normalize_crop_frame(crop_frame : Frame) -> Frame:
 
 def paste_back(temp_frame : Frame, crop_frame : Frame, affine_matrix : Matrix) -> Frame:
 	inverse_affine_matrix = cv2.invertAffineTransform(affine_matrix)
-	temp_frame_height, temp_frame_width = temp_frame.shape[0:2]
-	crop_frame_height, crop_frame_width = crop_frame.shape[0:2]
+	temp_frame_height, temp_frame_width = temp_frame.shape[:2]
+	crop_frame_height, crop_frame_width = crop_frame.shape[:2]
 	inverse_crop_frame = cv2.warpAffine(crop_frame, inverse_affine_matrix, (temp_frame_width, temp_frame_height))
 	inverse_mask = numpy.ones((crop_frame_height, crop_frame_width, 3), dtype = numpy.float32)
 	inverse_mask_frame = cv2.warpAffine(inverse_mask, inverse_affine_matrix, (temp_frame_width, temp_frame_height))
@@ -201,8 +201,7 @@ def blend_frame(temp_frame : Frame, paste_frame : Frame) -> Frame:
 
 
 def process_frame(source_face : Face, reference_face : Face, temp_frame : Frame) -> Frame:
-	many_faces = get_many_faces(temp_frame)
-	if many_faces:
+	if many_faces := get_many_faces(temp_frame):
 		for target_face in many_faces:
 			temp_frame = enhance_face(target_face, temp_frame)
 	return temp_frame

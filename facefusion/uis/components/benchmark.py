@@ -76,10 +76,13 @@ def listen() -> None:
 
 def start(benchmark_runs : List[str], benchmark_cycles : int) -> Generator[List[Any], None, None]:
 	facefusion.globals.source_path = '.assets/examples/source.jpg'
-	target_paths = [ BENCHMARKS[benchmark_run] for benchmark_run in benchmark_runs if benchmark_run in BENCHMARKS ]
-	benchmark_results = []
-	if target_paths:
+	if target_paths := [
+		BENCHMARKS[benchmark_run]
+		for benchmark_run in benchmark_runs
+		if benchmark_run in BENCHMARKS
+	]:
 		pre_process()
+		benchmark_results = []
 		for target_path in target_paths:
 			benchmark_results.append(benchmark(target_path, benchmark_cycles))
 			yield benchmark_results
@@ -100,7 +103,7 @@ def post_process() -> None:
 def benchmark(target_path : str, benchmark_cycles : int) -> List[Any]:
 	process_times = []
 	total_fps = 0.0
-	for i in range(benchmark_cycles):
+	for _ in range(benchmark_cycles):
 		facefusion.globals.target_path = target_path
 		facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path, facefusion.globals.target_path, tempfile.gettempdir())
 		video_frame_total = count_video_frame_total(facefusion.globals.target_path)

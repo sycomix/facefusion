@@ -33,7 +33,9 @@ FRAME_PROCESSORS_METHODS =\
 
 def load_frame_processor_module(frame_processor : str) -> Any:
 	try:
-		frame_processor_module = importlib.import_module('facefusion.processors.frame.modules.' + frame_processor)
+		frame_processor_module = importlib.import_module(
+			f'facefusion.processors.frame.modules.{frame_processor}'
+		)
 		for method_name in FRAME_PROCESSORS_METHODS:
 			if not hasattr(frame_processor_module, method_name):
 				raise NotImplementedError
@@ -85,11 +87,7 @@ def create_queue(temp_frame_paths : List[str]) -> Queue[str]:
 
 
 def pick_queue(queue : Queue[str], queue_per_future : int) -> List[str]:
-	queues = []
-	for _ in range(queue_per_future):
-		if not queue.empty():
-			queues.append(queue.get())
-	return queues
+	return [queue.get() for _ in range(queue_per_future) if not queue.empty()]
 
 
 def update_progress(progress : Any = None) -> None:

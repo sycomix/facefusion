@@ -54,8 +54,7 @@ def listen() -> None:
 		webcam_resolution_dropdown.change(stop, outputs = WEBCAM_IMAGE, cancels = start_event)
 		webcam_fps_slider.change(stop, outputs = WEBCAM_IMAGE, cancels = start_event)
 	WEBCAM_STOP_BUTTON.click(stop, cancels = start_event)
-	source_image = get_ui_component('source_image')
-	if source_image:
+	if source_image := get_ui_component('source_image'):
 		for method in [ 'upload', 'change', 'clear' ]:
 			getattr(source_image, method)(stop, cancels = start_event)
 
@@ -128,5 +127,5 @@ def open_stream(mode : StreamMode, resolution : str, fps : float) -> subprocess.
 		commands.extend([ '-b:v', '2000k', '-f', 'mpegts', 'udp://localhost:27000?pkt_size=1316' ])
 	if mode == 'v4l2':
 		device_name = os.listdir('/sys/devices/virtual/video4linux')[0]
-		commands.extend([ '-f', 'v4l2', '/dev/' + device_name ])
+		commands.extend(['-f', 'v4l2', f'/dev/{device_name}'])
 	return open_ffmpeg(commands)

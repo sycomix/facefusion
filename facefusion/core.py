@@ -219,9 +219,7 @@ def process_video() -> None:
 	# extract frames
 	update_status(wording.get('extracting_frames_fps').format(fps = fps))
 	extract_frames(facefusion.globals.target_path, fps)
-	# process frame
-	temp_frame_paths = get_temp_frame_paths(facefusion.globals.target_path)
-	if temp_frame_paths:
+	if temp_frame_paths := get_temp_frame_paths(facefusion.globals.target_path):
 		for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
 			update_status(wording.get('processing'), frame_processor_module.NAME)
 			frame_processor_module.process_video(facefusion.globals.source_path, temp_frame_paths)
@@ -254,4 +252,4 @@ def process_video() -> None:
 
 
 def update_status(message : str, scope : str = 'FACEFUSION.CORE') -> None:
-	print('[' + scope + '] ' + message)
+	print(f'[{scope}] {message}')

@@ -34,9 +34,7 @@ def predict_stream(frame : Frame) -> bool:
 	global STREAM_COUNTER
 
 	STREAM_COUNTER = STREAM_COUNTER + 1
-	if STREAM_COUNTER % FRAME_INTERVAL == 0:
-		return predict_frame(frame)
-	return False
+	return predict_frame(frame) if STREAM_COUNTER % FRAME_INTERVAL == 0 else False
 
 
 def predict_frame(frame : Frame) -> bool:

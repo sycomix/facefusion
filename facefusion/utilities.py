@@ -26,8 +26,7 @@ if platform.system().lower() == 'darwin':
 
 
 def run_ffmpeg(args : List[str]) -> bool:
-	commands = [ 'ffmpeg', '-hide_banner', '-loglevel', 'error' ]
-	commands.extend(args)
+	commands = ['ffmpeg', '-hide_banner', '-loglevel', 'error', *args]
 	try:
 		subprocess.run(commands, stderr = subprocess.PIPE, check = True)
 		return True
@@ -36,8 +35,7 @@ def run_ffmpeg(args : List[str]) -> bool:
 
 
 def open_ffmpeg(args : List[str]) -> subprocess.Popen[bytes]:
-	commands = [ 'ffmpeg', '-hide_banner', '-loglevel', 'error' ]
-	commands.extend(args)
+	commands = ['ffmpeg', '-hide_banner', '-loglevel', 'error', *args]
 	return subprocess.Popen(commands, stdin = subprocess.PIPE)
 
 
@@ -48,13 +46,18 @@ def extract_frames(target_path : str, fps : float) -> bool:
 	temp_frames_pattern = get_temp_frames_pattern(target_path, '%04d')
 	commands = [ '-hwaccel', 'auto', '-i', target_path, '-q:v', str(temp_frame_compression), '-pix_fmt', 'rgb24' ]
 	if trim_frame_start is not None and trim_frame_end is not None:
-		commands.extend([ '-vf', 'trim=start_frame=' + str(trim_frame_start) + ':end_frame=' + str(trim_frame_end) + ',fps=' + str(fps) ])
+		commands.extend(
+			[
+				'-vf',
+				f'trim=start_frame={str(trim_frame_start)}:end_frame={str(trim_frame_end)},fps={fps}',
+			]
+		)
 	elif trim_frame_start is not None:
-		commands.extend([ '-vf', 'trim=start_frame=' + str(trim_frame_start) + ',fps=' + str(fps) ])
+		commands.extend(['-vf', f'trim=start_frame={str(trim_frame_start)},fps={fps}'])
 	elif trim_frame_end is not None:
-		commands.extend([ '-vf', 'trim=end_frame=' + str(trim_frame_end) + ',fps=' + str(fps) ])
+		commands.extend(['-vf', f'trim=end_frame={str(trim_frame_end)},fps={fps}'])
 	else:
-		commands.extend([ '-vf', 'fps=' + str(fps) ])
+		commands.extend(['-vf', f'fps={fps}'])
 	commands.extend([ '-vsync', '0', temp_frames_pattern ])
 	return run_ffmpeg(commands)
 
@@ -105,7 +108,10 @@ def get_temp_frame_paths(target_path : str) -> List[str]:
 
 def get_temp_frames_pattern(target_path : str, temp_frame_prefix : str) -> str:
 	temp_directory_path = get_temp_directory_path(target_path)
-	return os.path.join(temp_directory_path, temp_frame_prefix + '.' + facefusion.globals.temp_frame_format)
+	return os.path.join(
+		temp_directory_path,
+		f'{temp_frame_prefix}.{facefusion.globals.temp_frame_format}',
+	)
 
 
 def get_temp_directory_path(target_path : str) -> str:
@@ -122,7 +128,9 @@ def normalize_output_path(source_path : Optional[str], target_path : Optional[st
 	if is_file(source_path) and is_file(target_path) and is_directory(output_path):
 		source_name, _ = os.path.splitext(os.path.basename(source_path))
 		target_name, target_extension = os.path.splitext(os.path.basename(target_path))
-		return os.path.join(output_path, source_name + '-' + target_name + target_extension)
+		return os.path.join(
+			output_path, f'{source_name}-{target_name}{target_extension}'
+		)
 	if is_file(target_path) and output_path:
 		target_name, target_extension = os.path.splitext(os.path.basename(target_path))
 		output_name, output_extension = os.path.splitext(os.path.basename(output_path))
@@ -234,6 +242,4 @@ def decode_execution_providers(execution_providers: List[str]) -> List[str]:
 def get_device(execution_providers : List[str]) -> str:
 	if 'CUDAExecutionProvider' in execution_providers:
 		return 'cuda'
-	if 'CoreMLExecutionProvider' in execution_providers:
-		return 'mps'
-	return 'cpu'
+	return 'mps' if 'CoreMLExecutionProvider' in execution_providers else 'cpu'

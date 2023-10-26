@@ -56,12 +56,8 @@ def read_static_image(image_path : str) -> Optional[Frame]:
 
 
 def read_image(image_path : str) -> Optional[Frame]:
-	if image_path:
-		return cv2.imread(image_path)
-	return None
+	return cv2.imread(image_path) if image_path else None
 
 
 def write_image(image_path : str, frame : Frame) -> bool:
-	if image_path:
-		return cv2.imwrite(image_path, frame)
-	return False
+	return cv2.imwrite(image_path, frame) if image_path else False

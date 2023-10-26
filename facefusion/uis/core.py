@@ -23,7 +23,9 @@ UI_LAYOUT_METHODS =\
 
 def load_ui_layout_module(ui_layout : str) -> Any:
 	try:
-		ui_layout_module = importlib.import_module('facefusion.uis.layouts.' + ui_layout)
+		ui_layout_module = importlib.import_module(
+			f'facefusion.uis.layouts.{ui_layout}'
+		)
 		for method_name in UI_LAYOUT_METHODS:
 			if not hasattr(ui_layout_module, method_name):
 				raise NotImplementedError
@@ -45,9 +47,7 @@ def get_ui_layouts_modules(ui_layouts : List[str]) -> List[ModuleType]:
 
 
 def get_ui_component(name: ComponentName) -> Optional[Component]:
-	if name in UI_COMPONENTS:
-		return UI_COMPONENTS[name]
-	return None
+	return UI_COMPONENTS[name] if name in UI_COMPONENTS else None
 
 
 def register_ui_component(name: ComponentName, component: Component) -> None:

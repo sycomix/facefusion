@@ -120,13 +120,13 @@ def swap_face(source_face : Face, target_face : Face, temp_frame : Frame) -> Fra
 
 def process_frame(source_face : Face, reference_face : Face, temp_frame : Frame) -> Frame:
 	if 'reference' in facefusion.globals.face_recognition:
-		similar_faces = find_similar_faces(temp_frame, reference_face, facefusion.globals.reference_face_distance)
-		if similar_faces:
+		if similar_faces := find_similar_faces(
+			temp_frame, reference_face, facefusion.globals.reference_face_distance
+		):
 			for similar_face in similar_faces:
 				temp_frame = swap_face(source_face, similar_face, temp_frame)
 	if 'many' in facefusion.globals.face_recognition:
-		many_faces = get_many_faces(temp_frame)
-		if many_faces:
+		if many_faces := get_many_faces(temp_frame):
 			for target_face in many_faces:
 				temp_frame = swap_face(source_face, target_face, temp_frame)
 	return temp_frame

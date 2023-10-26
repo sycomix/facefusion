@@ -68,8 +68,7 @@ def listen() -> None:
 		'target_video'
 	]
 	for component_name in multi_component_names:
-		component = get_ui_component(component_name)
-		if component:
+		if component := get_ui_component(component_name):
 			for method in [ 'upload', 'change', 'clear' ]:
 				getattr(component, method)(update_face_reference_position, outputs = REFERENCE_FACE_POSITION_GALLERY)
 	select_component_names : List[ComponentName] =\
@@ -79,11 +78,9 @@ def listen() -> None:
 		'face_analyser_gender_dropdown'
 	]
 	for component_name in select_component_names:
-		component = get_ui_component(component_name)
-		if component:
+		if component := get_ui_component(component_name):
 			component.select(update_face_reference_position, outputs = REFERENCE_FACE_POSITION_GALLERY)
-	preview_frame_slider = get_ui_component('preview_frame_slider')
-	if preview_frame_slider:
+	if preview_frame_slider := get_ui_component('preview_frame_slider'):
 		preview_frame_slider.release(update_face_reference_position, outputs = REFERENCE_FACE_POSITION_GALLERY)
 
 

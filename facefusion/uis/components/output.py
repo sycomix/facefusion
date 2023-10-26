@@ -38,8 +38,7 @@ def render() -> None:
 
 
 def listen() -> None:
-	output_path_textbox = get_ui_component('output_path_textbox')
-	if output_path_textbox:
+	if output_path_textbox := get_ui_component('output_path_textbox'):
 		OUTPUT_START_BUTTON.click(start, inputs = output_path_textbox, outputs = [ OUTPUT_IMAGE, OUTPUT_VIDEO ])
 	OUTPUT_CLEAR_BUTTON.click(clear, outputs = [ OUTPUT_IMAGE, OUTPUT_VIDEO ])
 

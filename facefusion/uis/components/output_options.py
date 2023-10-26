@@ -64,8 +64,7 @@ def listen() -> None:
 		'target_video'
 	]
 	for component_name in multi_component_names:
-		component = get_ui_component(component_name)
-		if component:
+		if component := get_ui_component(component_name):
 			for method in [ 'upload', 'change', 'clear' ]:
 				getattr(component, method)(remote_update, outputs = [ OUTPUT_IMAGE_QUALITY_SLIDER, OUTPUT_VIDEO_ENCODER_DROPDOWN, OUTPUT_VIDEO_QUALITY_SLIDER ])
 

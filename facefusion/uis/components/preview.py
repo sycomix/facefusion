@@ -64,8 +64,7 @@ def listen() -> None:
 		'target_video'
 	]
 	for component_name in multi_component_names:
-		component = get_ui_component(component_name)
-		if component:
+		if component := get_ui_component(component_name):
 			for method in [ 'upload', 'change', 'clear' ]:
 				getattr(component, method)(update_preview_image, inputs = PREVIEW_FRAME_SLIDER, outputs = PREVIEW_IMAGE)
 				getattr(component, method)(update_preview_frame_slider, inputs = PREVIEW_FRAME_SLIDER, outputs = PREVIEW_FRAME_SLIDER)
@@ -78,8 +77,7 @@ def listen() -> None:
 		'frame_enhancer_model_dropdown'
 	]
 	for component_name in update_component_names:
-		component = get_ui_component(component_name)
-		if component:
+		if component := get_ui_component(component_name):
 			component.change(update_preview_image, inputs = PREVIEW_FRAME_SLIDER, outputs = PREVIEW_IMAGE)
 	select_component_names : List[ComponentName] =\
 	[
@@ -89,8 +87,7 @@ def listen() -> None:
 		'face_analyser_gender_dropdown'
 	]
 	for component_name in select_component_names:
-		component = get_ui_component(component_name)
-		if component:
+		if component := get_ui_component(component_name):
 			component.select(update_preview_image, inputs = PREVIEW_FRAME_SLIDER, outputs = PREVIEW_IMAGE)
 	change_component_names : List[ComponentName] =\
 	[
@@ -99,8 +96,7 @@ def listen() -> None:
 		'frame_enhancer_blend_slider'
 	]
 	for component_name in change_component_names:
-		component = get_ui_component(component_name)
-		if component:
+		if component := get_ui_component(component_name):
 			component.change(update_preview_image, inputs = PREVIEW_FRAME_SLIDER, outputs = PREVIEW_IMAGE)
 
 

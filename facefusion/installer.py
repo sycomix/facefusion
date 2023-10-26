@@ -66,6 +66,17 @@ def run(program : ArgumentParser) -> None:
 		if torch_wheel == 'default':
 			subprocess.call([ 'pip', 'install', '-r', 'requirements.txt' ])
 		else:
-			subprocess.call([ 'pip', 'install', '-r', 'requirements.txt', '--extra-index-url', 'https://download.pytorch.org/whl/' + torch_wheel ])
+			subprocess.call(
+				[
+					'pip',
+					'install',
+					'-r',
+					'requirements.txt',
+					'--extra-index-url',
+					f'https://download.pytorch.org/whl/{torch_wheel}',
+				]
+			)
 		subprocess.call([ 'pip', 'uninstall', 'onnxruntime', onnxruntime_name, '-y' ])
-		subprocess.call([ 'pip', 'install', onnxruntime_name + '==' + onnxruntime_version ])
+		subprocess.call(
+			['pip', 'install', f'{onnxruntime_name}=={onnxruntime_version}']
+		)
